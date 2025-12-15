@@ -91,3 +91,28 @@ The drug dictionary API is available at:
 - python-dotenv - Environment variable loading
 - Pydantic - Data validation
 - python-multipart - File upload support
+
+## Deployment
+
+### Local Development
+
+1. Install dependencies:
+   ```
+   pip install -r requirements.txt
+   ```
+
+2. Run the application:
+   ```
+   cd backend
+   python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+   ```
+
+### Deploy to Render
+
+1. Fork this repository to your GitHub account
+2. Create a new Web Service on Render
+3. Connect your forked repository
+4. Set the build command to: `pip install -r requirements.txt`
+5. Set the start command to: `python -m uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT`
+6. Add an environment variable `PYTHON_VERSION` with value `3.11`
+7. Deploy!

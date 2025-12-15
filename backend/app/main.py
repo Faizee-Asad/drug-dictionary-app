@@ -10,6 +10,9 @@ import os
 # Load environment variables
 load_dotenv()
 
+# Get port from environment variable or default to 8000
+port = int(os.environ.get("PORT", 8000))
+
 # Create FastAPI app
 app = FastAPI(
     title="Drug Dictionary API",
@@ -29,12 +32,12 @@ app.add_middleware(
 # Initialize database
 db.init_db()
 
+# Include routers
+app.include_router(drug_dictionary.router)
+
 # Serve static files (for frontend)
 if os.path.exists("../frontend"):
     app.mount("/static", StaticFiles(directory="../frontend"), name="static")
-
-# Include routers
-app.include_router(drug_dictionary.router)
 
 @app.get("/", include_in_schema=False)
 async def root():
