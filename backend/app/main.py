@@ -1,8 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from app.db import db
 from app.routers import drug_dictionary
+from app.auth import AuthMiddleware, verify_admin, create_session_token, active_sessions
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
@@ -29,6 +31,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Add authentication middleware
+app.add_middleware(AuthMiddleware)
+
 # Initialize database
 db.init_db()
 
@@ -47,3 +52,16 @@ async def root():
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}
+
+@app.post("/api/login")
+async def login(credentials: HTTPBasicCredentials = Depends(HTTPBasic())):
+    username = verify_admin(credentials)
+    token = create_session_token()
+    active_sessions.add(token)
+    return {"token": token, "username": username}
+
+@app.post("/api/logout")
+async def logout(token: str):
+    if token in active_sessions:
+        active_sessions.remove(token)
+    return {"message": "Logged out successfully"}

@@ -20,13 +20,13 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <button onclick="exportDrugs()"
-                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2">
+                    <button id="export-btn" onclick="exportDrugs()"
+                        class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 hidden">
                         <i data-lucide="download" class="w-4 h-4"></i>
                         Export CSV
                     </button>
-                    <button onclick="showImportModal()"
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2">
+                    <button id="import-btn" onclick="showImportModal()"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 hidden">
                         <i data-lucide="upload" class="w-4 h-4"></i>
                         Import
                     </button>
@@ -34,6 +34,16 @@
                         class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2">
                         <i data-lucide="plus" class="w-4 h-4"></i>
                         Add Drug
+                    </button>
+                    <button id="login-btn" onclick="showLoginModal()"
+                        class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2">
+                        <i data-lucide="lock" class="w-4 h-4"></i>
+                        Login
+                    </button>
+                    <button id="logout-btn" onclick="logout()"
+                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 hidden">
+                        <i data-lucide="unlock" class="w-4 h-4"></i>
+                        Logout
                     </button>
                 </div>
             </div>
@@ -404,6 +414,39 @@
         </div>
     </div>
 
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">Admin Login</h3>
+            </div>
+            <div class="px-6 py-4">
+                <form id="login-form" class="space-y-4">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                        <input type="text" id="username" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" id="password" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                </form>
+            </div>
+            <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end space-x-3">
+                <button type="button" onclick="closeLoginModal()"
+                    class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Cancel
+                </button>
+                <button type="button" onclick="login()"
+                    class="px-4 py-2 bg-gray-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                    Login
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Import Modal -->
     <div id="import-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 z-50">
         <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
@@ -438,6 +481,39 @@
                 <button type="button" onclick="importDrugs()"
                     class="px-4 py-2 bg-blue-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                     Import
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg shadow-xl max-w-md w-full">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">Admin Login</h3>
+            </div>
+            <div class="px-6 py-4">
+                <form id="login-form" class="space-y-4">
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                        <input type="text" id="username" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <input type="password" id="password" required
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+                </form>
+            </div>
+            <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 flex justify-end space-x-3">
+                <button type="button" onclick="closeLoginModal()"
+                    class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Cancel
+                </button>
+                <button type="button" onclick="login()"
+                    class="px-4 py-2 bg-gray-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                    Login
                 </button>
             </div>
         </div>
@@ -753,9 +829,18 @@
                 const url = id ? `${API_BASE}/api/drugs/${id}` : `${API_BASE}/api/drugs/`;
                 const method = id ? 'PUT' : 'POST';
                 
+                // Prepare headers
+                const headers = { 'Content-Type': 'application/json' };
+                
+                // Add authorization header for update operations (admin only)
+                if (id) {
+                    const authHeaders = getAuthHeaders();
+                    Object.assign(headers, authHeaders);
+                }
+                
                 const res = await fetch(url, {
                     method,
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: headers,
                     body: JSON.stringify(data)
                 });
                 
@@ -778,7 +863,11 @@
             if (!confirm('Are you sure you want to delete this drug?')) return;
             
             try {
-                const res = await fetch(`${API_BASE}/api/drugs/${id}`, { method: 'DELETE' });
+                const headers = getAuthHeaders();
+                const res = await fetch(`${API_BASE}/api/drugs/${id}`, { 
+                    method: 'DELETE',
+                    headers: headers
+                });
                 if (res.ok) {
                     loadDrugs();
                     loadStats();
@@ -826,8 +915,10 @@
             formData.append('file', file);
             
             try {
+                const headers = getAuthHeaders();
                 const res = await fetch(`${API_BASE}/api/drugs/bulk-import`, {
                     method: 'POST',
+                    headers: headers,
                     body: formData
                 });
                 
@@ -849,7 +940,19 @@
         // Export drugs
         async function exportDrugs() {
             try {
-                window.location.href = `${API_BASE}/api/drugs/export/csv`;
+                const headers = getAuthHeaders();
+                // First check if we have permission
+                const response = await fetch(`${API_BASE}/api/drugs/export/csv`, {
+                    headers: headers
+                });
+                
+                if (response.ok) {
+                    // If authorized, trigger download
+                    window.location.href = `${API_BASE}/api/drugs/export/csv`;
+                } else {
+                    const errorData = await response.json();
+                    alert(`Export failed: ${errorData.detail || 'Unauthorized access - please login as admin'}`);
+                }
             } catch (err) {
                 alert(`Export failed: ${err.message}`);
             }
@@ -866,6 +969,98 @@
                 clearTimeout(timeout);
                 timeout = setTimeout(later, wait);
             };
+        }
+
+        // Authentication functions
+        let authToken = null;
+
+        // Show login modal
+        function showLoginModal() {
+            document.getElementById('login-modal').classList.remove('hidden');
+            document.getElementById('login-modal').classList.add('flex');
+        }
+
+        // Close login modal
+        function closeLoginModal() {
+            document.getElementById('login-modal').classList.add('hidden');
+            document.getElementById('login-modal').classList.remove('flex');
+            document.getElementById('login-form').reset();
+        }
+
+        // Login function
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Basic ' + btoa(username + ':' + password),
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    authToken = data.token;
+                    
+                    // Hide login button and show logout button
+                    document.getElementById('login-btn').classList.add('hidden');
+                    document.getElementById('logout-btn').classList.remove('hidden');
+                    
+                    // Show admin buttons
+                    document.getElementById('export-btn').classList.remove('hidden');
+                    document.getElementById('import-btn').classList.remove('hidden');
+                    
+                    closeLoginModal();
+                    alert('Login successful!');
+                } else {
+                    const errorData = await response.json();
+                    alert(`Login failed: ${errorData.detail || 'Invalid credentials'}
+`);
+                }
+            } catch (err) {
+                alert(`Login error: ${err.message}`);
+            }
+        }
+
+        // Logout function
+        async function logout() {
+            if (!authToken) return;
+
+            try {
+                await fetch(`${API_BASE}/api/logout`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ token: authToken })
+                });
+
+                authToken = null;
+                
+                // Show login button and hide logout button
+                document.getElementById('login-btn').classList.remove('hidden');
+                document.getElementById('logout-btn').classList.add('hidden');
+                
+                // Hide admin buttons
+                document.getElementById('export-btn').classList.add('hidden');
+                document.getElementById('import-btn').classList.add('hidden');
+                
+                alert('Logged out successfully!');
+            } catch (err) {
+                alert(`Logout error: ${err.message}`);
+            }
+        }
+
+        // Add authorization header to API requests that need it
+        function getAuthHeaders() {
+            const headers = {};
+            if (authToken) {
+                headers['Authorization'] = `Bearer ${authToken}`;
+            }
+            return headers;
         }
     </script>
 </body>

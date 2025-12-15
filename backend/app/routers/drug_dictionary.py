@@ -3,14 +3,27 @@ Drug Dictionary API Router
 Provides comprehensive CRUD operations for managing drug database
 """
 
-from fastapi import APIRouter, HTTPException, Query, UploadFile, File
+from fastapi import APIRouter, HTTPException, Query, UploadFile, File, Depends, Request
 from app.db import db, crud, schemas
+from app.auth import active_sessions
 from typing import List
 import csv
 import io
 import json
 
 router = APIRouter(prefix="/api/drugs", tags=["Drug Dictionary"])
+
+# Dependency to check for admin authorization
+def check_admin_auth(request: Request):
+    # Extract token from Authorization header
+    auth_header = request.headers.get("Authorization")
+    if not auth_header or not auth_header.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Admin authentication required")
+    
+    token = auth_header.split(" ")[1]
+    if token not in active_sessions:
+        raise HTTPException(status_code=401, detail="Invalid or expired session")
+    return True
 
 # IMPORTANT: Specific routes must come BEFORE parameterized routes
 # Move specific routes like /stats, /search, /export, /resolve to the top
@@ -108,7 +121,7 @@ def resolve_generic_name(medicine_name: str):
         session.close()
 
 @router.get("/export/csv")
-def export_drugs_csv():
+def export_drugs_csv(authorized: bool = Depends(check_admin_auth)):
     """Export all drugs to CSV format"""
     from fastapi.responses import StreamingResponse
     
@@ -164,7 +177,7 @@ def export_drugs_csv():
         session.close()
 
 @router.post("/bulk-import")
-async def bulk_import_drugs(file: UploadFile = File(...)):
+async def bulk_import_drugs(file: UploadFile = File(...), authorized: bool = Depends(check_admin_auth)):
     """
     Bulk import drugs from CSV or JSON file
     
@@ -251,7 +264,7 @@ def get_drug(drug_id: int):
         session.close()
 
 @router.put("/{drug_id}", response_model=schemas.DrugResponse)
-def update_drug(drug_id: int, drug: schemas.DrugUpdate):
+def update_drug(drug_id: int, drug: schemas.DrugUpdate, authorized: bool = Depends(check_admin_auth)):
     """Update drug entry"""
     session = db.SessionLocal()
     try:
@@ -266,7 +279,7 @@ def update_drug(drug_id: int, drug: schemas.DrugUpdate):
         session.close()
 
 @router.delete("/{drug_id}")
-def delete_drug(drug_id: int):
+def delete_drug(drug_id: int, authorized: bool = Depends(check_admin_auth)):
     """Delete drug entry"""
     session = db.SessionLocal()
     try:
