@@ -618,10 +618,54 @@
                     </div>
                 `;
                 
+                // Populate category and form dropdowns
+                populateCategoryFilter(stats.categories || {});
+                populateFormFilter(stats.forms || {});
+                
                 lucide.createIcons();
             } catch (err) {
                 console.error('Error loading stats:', err);
             }
+        }
+        
+        // Populate category filter dropdown
+        function populateCategoryFilter(categories) {
+            const categoryFilter = document.getElementById('category-filter');
+            
+            // Clear existing options except the first one
+            while (categoryFilter.options.length > 1) {
+                categoryFilter.remove(1);
+            }
+            
+            // Add category options
+            Object.keys(categories).sort().forEach(category => {
+                if (category) { // Only add non-empty categories
+                    const option = document.createElement('option');
+                    option.value = category;
+                    option.textContent = category;
+                    categoryFilter.appendChild(option);
+                }
+            });
+        }
+        
+        // Populate form filter dropdown
+        function populateFormFilter(forms) {
+            const formFilter = document.getElementById('form-filter');
+            
+            // Clear existing options except the first one
+            while (formFilter.options.length > 1) {
+                formFilter.remove(1);
+            }
+            
+            // Add form options
+            Object.keys(forms).sort().forEach(form => {
+                if (form) { // Only add non-empty forms
+                    const option = document.createElement('option');
+                    option.value = form;
+                    option.textContent = form;
+                    formFilter.appendChild(option);
+                }
+            });
         }
 
         // Load drugs with filters and pagination
